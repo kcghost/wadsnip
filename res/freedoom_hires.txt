@@ -1,0 +1,73 @@
+===========================================================================
+Advanced engine needed  : GZDoom
+Primary purpose         : No levels included
+===========================================================================
+Title                   : Freedoom Wadsnip Hires
+Version                 : 1.0
+Filename                : freedoom_hires_2x.pk3,
+                          freedoom_hires_4x.pk3,
+                          freedoom_hires_8x.pk3
+Author                  : Casey Fitzpatrick
+Email Address           : kcghost@gmail.com
+
+Description             : A high resolution package for Freedoom using AI
+                          upscaled textures and sprites. Works with
+                          freedm.wad, freedoom1.wad, and freedoom2.wad.
+                          
+                          Provides 2x, 4x, and 8x resolutions to choose
+                          from. (Bigger is not always better, larger scales
+                          look different and take a longer time to load).
+                          
+                          Automatically generated using the wadsnip
+                          project, more information at:
+                          https://github.com/kcghost/wadsnip/
+
+Additional Credits to   : The Freedoom project, see freedoom_copying.txt
+                          and freedoom_credits.txt.
+===========================================================================
+* What is included *
+
+New levels              : None
+Sounds                  : No
+Music                   : No
+Graphics                : Yes
+Dehacked/BEX Patch      : No
+Demos                   : No
+Other                   : No
+Other files required    : None
+
+
+* Play Information *
+
+Game                    : Freedoom Phase 1, Freedoom Phase 2, FreeDM
+Map #                   : None
+Single Player           : No
+Cooperative 2-4 Player  : No
+Deathmatch 2-4 Player   : No
+Other game styles       : None
+Difficulty Settings     : Not implemented
+
+
+* Construction *
+
+Base                    : Freedoom: Phase 1+2, FreeDM 0.11.3
+Tested With             : GZDoom 4.1.3
+
+
+* Copyright / Permissions *
+
+This work is programmatically derived from Freedoom assets and is
+therefore under the same copyright protection as Freedoom 0.11.3
+itself. Freedoom 0.11.3 uses a 3-clause BSD license which allows
+for redistribution under particular terms. See COPYING.txt.
+
+Since it contains no creative additions by myself it does not qualify as a
+"derivative work" in which my contributions might themselves receive
+copyright protection. I claim no copyright on the material, the copyright
+is held solely by the contributors to the Freedoom project.
+
+* Where to get the files that this text file describes *
+
+Web sites:
+https://github.com/kcghost/wadsnip/releases
+https://freedoom.github.io/

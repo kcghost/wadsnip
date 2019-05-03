@@ -1,0 +1,91 @@
+===========================================================================
+Advanced engine needed  : GZDoom
+Primary purpose         : No levels included
+===========================================================================
+Title                   : Doom Wadsnip Hires with Sprite Fixes
+Version                 : 1.0
+Filename                : doom_sprfix_hires_2x.pk3,
+                          doom_sprfix_hires_4x.pk3,
+                          doom_sprfix_hires_8x.pk3
+Author                  : Casey Fitzpatrick
+Email Address           : kcghost@gmail.com
+
+Description             : A high resolution package for Doom using AI
+                          upscaled textures and sprites. Works with
+                          doom.wad, doomu.wad, doombfg.wad,
+                          doom2.wad, doom2bfg.wad,
+                          tnt.wad, and plutonia.wad.
+
+                          Also includes the Doom 2 Minor Sprite Fixing
+                          Project v1.9 for convenience. See SPRFIX19.txt.
+                          
+                          Provides 2x, 4x, and 8x resolutions to choose
+                          from. (Bigger is not always better, larger scales
+                          look different and take a longer time to load).
+                          
+                          Automatically generated using the wadsnip
+                          project, more information at:
+                          https://github.com/kcghost/wadsnip/
+
+Additional Credits to   : Revenant100 aka Marphy Black (For Doom 2 Minor 
+                          Sprite Fixing Project v1.9)
+===========================================================================
+* What is included *
+
+New levels              : None
+Sounds                  : No
+Music                   : No
+Graphics                : Yes
+Dehacked/BEX Patch      : Yes
+Demos                   : No
+Other                   : No
+Other files required    : None
+
+
+* Play Information *
+
+Game                    : Doom Registered, Doom Ultimate, Doom BFG,
+                          Doom 2, Doom 2 BFG, Final Doom
+Map #                   : None
+Single Player           : No
+Cooperative 2-4 Player  : No
+Deathmatch 2-4 Player   : No
+Other game styles       : None
+Difficulty Settings     : Not implemented
+
+
+* Construction *
+
+Base                    : Doom Registered, Doom Ultimate, Doom BFG,
+                          Doom 2, Doom 2 BFG, Final Doom,
+                          Doom 2 Minor Sprite Fixing Project v1.9
+Tested With             : GZDoom 4.1.3
+
+
+* Copyright / Permissions *
+
+The Doom 2 Minor Sprite Fixing Project v1.9 has been used as a base in this
+work in accordance with the explicit permissions outlined in SPRFIX19.txt.
+Creative additions provided by that project should be considered their
+copyright.
+
+This work is for the most part programmatically derived from Doom assets
+and is therefore under the same copyright protection as Doom. Doom is owned
+by id Software/Bethesda Softworks.
+
+Since it contains no creative additions by myself it does not qualify as a
+"derivative work" in which my contributions might themselves receive
+copyright protection. I claim no copyright on the material, the copyright
+is held by id Software/Bethesda Softworks.
+
+The legality of distribution of this mod is questionable. It could be
+argued that the mod requires use of an official base game to play, and
+that there is an unchallenged precedent set by the modding community,
+therefore Bethesda shouldn't have a problem with it. But I will certainly
+comply a takedown request if Bethesda were to send one.
+
+* Where to get the files that this text file describes *
+
+Web sites:
+https://github.com/kcghost/wadsnip/releases
+https://www.doomworld.com/forum/topic/62403-doom-2-minor-sprite-fixing-project-v19-release-updated-12718/

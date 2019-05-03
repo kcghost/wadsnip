@@ -1,0 +1,6 @@
+[submodule "waifu2x-chainer"]
+	path = waifu2x_chainer
+	url = https://github.com/kcghost/waifu2x-chainer
+[submodule "xbrzscale"]
+	path = xbrzscale
+	url = https://github.com/kcghost/xbrzscale
