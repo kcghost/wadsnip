@@ -52,6 +52,6 @@ Wadsnip is licensed under GPL v3.
 There is a core set of functionality under [doom](doom/) that is at least somewhat extensible, and plenty of interesting things you can do with the code that are not fully demonstrated.
 Please feel free to fork this project to add new functionality and scripts. Make a pull request if you think your code is universally useful and follows the following vague rules:
 1. The project structure is such that user interactable scripts should be short and sweet, mostly just argument parsing for a function in [doom.util](doom/util.py).
-2. All functions in [doom.util](doom/util.py) should provide their own imports to avoid unecessary dependencies. (A user shouldn't be forced to install PIL or chainer for a simple lump extraction for example).
+2. All functions in [doom.util](doom/util.py) should provide their own imports to avoid unnecessary dependencies. (A user shouldn't be forced to install PIL or chainer for a simple lump extraction for example).
 3. I actively despise PEP8, so don't worry about that. Honestly just make sure you use tabs. *Tabs* in **Python**? I know, I'm a terrible person.
 4. TBD.
