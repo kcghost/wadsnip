@@ -3,7 +3,7 @@ doom1_wads := iwads/doom.wad iwads/doomu.wad iwads/doombfg.wad
 doom2_wads := iwads/doom2.wad iwads/doom2bfg.wad iwads/tnt.wad iwads/plutonia.wad
 scales := 2 4 8
 
-all: out/doom_sprfix_hires.zip out/doom_smoothdoom_hires.zip out/freedoom_hires.zip $(foreach scale,$(scales),out/doom_sprfix_hires_$(scale)x.pk3) $(foreach scale,$(scales),out/doom_smoothdoom_hires_$(scale)x.pk3) $(foreach scale,$(scales),out/freedoom_hires_$(scale)x.pk3)
+all: $(foreach hires_n,doom_sprfix doom_smoothdoom freedoom,out/$(hires_n)_hires.zip $(foreach scale,$(scales),out/$(hires_n)_hires_$(scale)x.pk3)) out/freedoom_bleeps.pk3 out/doom_bleeps.pk3
 
 .PHONY: clean veryclean all
 
@@ -75,12 +75,21 @@ out/freedoom_hires_%x.pk3: $(foreach iwad,$(freedoom_wads),$(iwad))
 	python3 hires.py -nopk3 -path $(basename $@) $(foreach iwad,$(freedoom_wads),-iwad $(iwad)) -gpu 0 -scale $*
 	$(post_hires)
 
-out/%.zip:
-	zip -9 -j $@ $^
+out/%_bleeps.pk3:
+	rm -rf $(basename $@)
+	python3 bleeps.py -nopk3 -path $(basename $@) $(foreach iwad,$^,-iwad $(iwad))
+	cd $(basename $@)
+	zip -0 -r ../$(notdir $@) *
+
+out/freedoom_bleeps.pk3: $(foreach iwad,$(freedoom_wads),$(iwad))
+out/doom_bleeps.pk3: $(foreach iwad,$(doom1_wads) $(doom2_wads),$(iwad))
 
 out/doom_sprfix_hires.zip: $(foreach scale,$(scales),out/doom_sprfix_hires_$(scale)x.pk3) res/doom_hires_sprfix.txt pwads/sprfix19/SPRFIX19.txt
 out/doom_smoothdoom_hires.zip: $(foreach scale,$(scales),out/doom_smoothdoom_hires_$(scale)x.pk3) res/doom_hires_smoothdoom.txt out/SmoothDoom/Credits.txt
 out/freedoom_hires.zip: $(foreach scale,$(scales),out/freedoom_hires_$(scale)x.pk3) res/freedoom_hires.txt res/freedoom_copying.txt res/freedoom_credits.txt
+
+out/%.zip:
+	zip -9 -j $@ $^
 
 clean:
 	rm -rf out/*

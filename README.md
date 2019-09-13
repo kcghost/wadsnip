@@ -17,6 +17,13 @@ Extract any wad or PK3 into namespaced folders and a PK3. Also supports a `--mod
 python3 extract.py -iwad iwads/doomu.wad --modernize
 ```
 
+### bleeps
+Generate a mod that replaces the digital sound effects with PC speaker ones.
+```
+python3 bleeps.py -iwad iwads/doom.wad -iwad iwads/doomu.wad -iwad iwads/doom2.wad -iwad iwads/tnt.wad -iwad iwads/plutonia.wad
+python3 bleeps.py -iwad iwads/freedoom1.wad -iwad iwads/freedoom2.wad -iwad iwads/freedm.wad
+```
+
 ## Setup
 *Only tested on Linux, sorry. Might work on Windows with Python/MinGW.*
 ```
@@ -35,7 +42,6 @@ pip3 install cupy101
 Cupy is only needed if you want to speed up generation of hires packages with the use of a GPU. See [waifu2x-chainer](https://github.com/tsurumeso/waifu2x-chainer) for details.
 
 ## TODO
-* PC speaker pack generator
 * PWAD filter merge (Music packs as example)
 * IWAD smoosh
 * Map pack smoosh

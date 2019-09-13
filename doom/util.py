@@ -462,3 +462,60 @@ def hires(chains, path=None, scale=2, cpu=1):
 	
 	print('Extracted to: ' + path)
 	return path
+	
+# Replace the normal sounds with "rendered" PC speaker ones
+def bleeps(chains, path=None):
+	from os.path import basename, splitext, join
+	from shutil import rmtree
+	from difflib import get_close_matches
+	from doom.archive import Archives
+	from doom.sound import Dmx, dmx_to_ogg
+	
+	if not path:
+		names = ''
+		for chain in chains:
+			for archive in chain[1:]:
+				names += splitext(basename(archive.path))[0] + '_'
+		names = names[:-1]
+		path = join('out', names + '_bleeps')
+	rmtree(path, ignore_errors=True)
+	
+	all_namespaces = []
+	for chain in chains:
+		print('Processing: ' + chain[0].game)
+		archive = Archives(*chain[1:])
+		
+		sound_ns = {}
+		pc_names = []
+		dig_names = []
+		for header in archive:
+			if header['extension'] == 'lmp' and header['namespace'] in ['sounds']:
+				sound = Dmx(header['data'])
+				if sound.is_pc():
+					header['data'] = dmx_to_ogg(header['data'])
+					header['extension'] = 'ogg'
+					sound_ns[header['name']] =  header
+					pc_names.append(header['name'])
+				else:
+					dig_names.append(header['name'])
+
+		# Find digital name equivalents
+		for pc_name in set(pc_names):
+			matches = get_close_matches(pc_name, dig_names)
+			# if no match just skip
+			if not matches:
+				print(f'Can\'t find a digital name match for {pc_name}. Skipping.')
+				sound_ns.pop(pc_name)
+			else:
+				name = matches[0]
+				sound_ns[name] = sound_ns.pop(pc_name)
+				sound_ns[name]['name'] = name
+
+		all_namespaces.append(sound_ns)
+
+	filtered = filter_namespace(all_namespaces)
+	for header in filtered:
+		save_data(header['data'], join(path, 'filter', header['filter'], 'sounds', header['name'].lower() + '.' + header['extension']))
+
+	print('Extracted to: ' + path)
+	return path
