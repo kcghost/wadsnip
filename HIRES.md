@@ -4,6 +4,10 @@
 Hires packages can be automatically generated using the [hires](hires.py) script, but several prebuilt packages are provided on the [releases](https://github.com/kcghost/wadsnip/releases) page.
 Using the script offers more flexibility, but it requires a lot of CPU time or an NVIDIA GPU, and the releases contain extra fixes and optimizations.
 
+## Requirements
+* Use GZDoom >= 4.1.0
+* Do not use brightmaps, they are not compatible at this time
+
 ## Gameplay Recommendations
 * `Options>Display options>Texture options>Texture Filter mode>Precache GL textures>Yes`. This will cause a delay in load time at level start, but avoids some stuttering during gameplay.
 * Not actually needed when using hires, but just generally: `Options>Display options>Texture options>Texture Filter mode>None`
