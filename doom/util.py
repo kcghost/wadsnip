@@ -341,7 +341,7 @@ def extract(chain, path=None, with_iwad=False, modernize=False):
 	if modernize:
 		# No hacks cause I think even a semi-accurate 'extraction' should be warts and all
 		textures_str = ''
-		for texture in gen_textures(archive, palette, split_mirror=False, hacks=False):
+		for texture in gen_textures(archive, palette, hacks=False):
 			save_data(texture_to_png(texture, palette), join(path, 'composite', texture['namespace'].lower() + 's', texture['name'].lower() + '.png'))
 			textures_str += str(texture) + '\n'
 		# Include rebuilt TEXTURES lump if TEXTUREX was used in any capacity
