@@ -54,23 +54,33 @@ def dmx_to_flac(data):
 class Dmx():
 	def __init__(self, data):
 		with io.BytesIO(data) as data_file:
+			data_file.seek(0,2)
+			total_size = data_file.tell()
 			data_file.seek(0)
+			
 			self.format = struct.unpack('<H', data_file.read(2))[0]
 			if self.format == 3:
 				# Digital sound
 				self.samplerate, self.samples = struct.unpack('<HI', data_file.read(6))
 				self.samples -= 32
 				self.pad1 = data_file.read(16)
+				if total_size != 2 + 6 + 16 + self.samples + 16:
+					raise Exception("Sanity check failure for digital sound!")
 				self.raw = data_file.read(self.samples)
 				self.pad2 = data_file.read(16)
 			elif self.format == 0:
 				# PC speaker sound
 				self.samples = struct.unpack('<H', data_file.read(2))[0]
+				if total_size != 2 + 2 + self.samples:
+					raise Exception("Sanity check failure for PC sound!")
 				self.raw = data_file.read(self.samples)
 			# TODO: There are 2 more formats that are MIDI sounds? At least according to omgifol? Not sure if they are used by anything.
 	
 	def is_pc(self):
 		return self.format == 0
+
+	def is_digital(self):
+		return self.format == 3
 	
 	def to_pcmu8(self):
 		if self.format == 3:

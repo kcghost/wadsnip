@@ -253,6 +253,31 @@ class Pk3(Archive):
 		lump_file.close()
 		return data
 
+# Try to find out if the data is sound or graphic or the like, return namespace name (ish)
+def id_type(data):
+	from doom.sound import Dmx
+	from doom.music import Mus
+	from doom.graphic import ZImage
+	try:
+		sound = Dmx(data)
+		if sound.is_pc():
+			return "sounds_pcspkr"
+		elif sound.is_digital():
+			return "sounds_digital"
+	except:
+		pass
+	try:
+		music = Mus(data)
+		return "music"
+	except:
+		pass
+	try:
+		graphic = ZImage(data, None, convert=False)
+		return "graphics"
+	except:
+		pass
+	return None
+
 class Wad(Archive):
 	def __init__(self, path):
 		self.path = path
@@ -391,57 +416,74 @@ class Wad(Archive):
 	# UDMF is just map header, then TEXTMAP, then anything until ENDMAP. Unsure about 'additional' lumps in this context, but I assume for now everything should be within the marker.
 	# TODO: Support Alpha Doom formats?
 
-	# Default name recognition. TODO: Update based on lumps like SNDINFO or other descriptive information
+	# Default name recognition. Try to just do special lump naems here, type recognition for everything else.
 	known_names = {
-		# TODO: Parse SNDINFO
-		'sounds_digital': [
-			'DS*'
-		],
-		'sounds_pcspkr': [
-			'DP*'
-		],
-		# TODO: Parse MAPINFO
-		'music': [
-			'D_*'
-		],
-		# Mostly taken from omgifol. May not be a complete list.
-		# TODO: Parse...I don't even know. 
-		'graphics': [
-			'TITLEPIC',
-			'CWILV*',
-			'WI*',
-			'M_*',
-			'INTERPIC',
-			'BRDR*',
-			'PFUB?',
-			'ST*',
-			'VICTORY2',
-			'CREDIT',
-			'END?',
-			'WI*',
-			'BOSSBACK',
-			'ENDPIC',
-			'HELP',
-			'BOX??',
-			'AMMNUM?',
-			'HELP*',
-			'DIG*',
-			'PRBOOM'
-		],
-		'patches': [
-		],
-		# TODO: Assemble a more complete list of 'special' lumps
 		'global': [
-			'PLAYPAL',
-			'COLORMAP',
-			'ENDOOM',
 			'DEMO*',
-			'TEXTURE*',
+			# https://zdoom.org/wiki/Category:Graphics_lumps
+			'ANIMATED',
+			'ANIMDEFS',
+			'AUTOPAGE',
+			'COLORMAP',
+			'CONBACK',
+			'DECALDEF',
+			'ENDOOM',
+			'HIRESTEX',
+			'LOADING',
+			'PALVERS',
+			'PLAYPAL',
 			'PNAMES',
+			'STARTUP',
+			'STARTUP0',
+			'SWITCHES',
+			'TEXTCOLO',
+			'TEXTURES',
+			'TEXTURE*',
+			'TITLEPIC',
+			'X11R6RGB',
+			# https://zdoom.org/wiki/Category:Audio_lumps
+			'DMXGUS',
 			'GENMIDI',
-			'DMXGUS*',
-			'DBIGFONT',
-			'DEHACKED'
+			'MUSINFO',
+			'REVERBS',
+			'SNDCURVE',
+			'SNDINFO',
+			'SNDSEQ',
+			# https://zdoom.org/wiki/Category:ZDoom_special_lumps
+			'ALTHUDCF',
+			'ANIMDEFS',
+			'CVARINFO',
+			'DECALDEF',
+			'DECORATE',
+			'DEFBINDS',
+			'DEHACKED',
+			'DEHSUPP',
+			'FONTDEFS',
+			'GAMEINFO',
+			'HIRESTEX',
+			'IWADINFO',
+			'KEYCONF',
+			'LANGUAGE',
+			'LOADACS',
+			'LOCKDEFS',
+			'MAPINFO',
+			'MENUDEF',
+			'MUSINFO',
+			'PALVERS',
+			'REVERBS',
+			'SBARINFO',
+			'SECRETS',
+			'SNDINFO',
+			'SNDSEQ',
+			'S_SKIN',
+			'TEAMINFO',
+			'TERRAIN',
+			'TEXTCOLO',
+			'TEXTURES',
+			'TITLEMAP',
+			'VOXELDEF',
+			'X11R6RGB',
+			'XHAIRS',
 		]
 	}
 
@@ -486,16 +528,28 @@ class Wad(Archive):
 			'HI': 'hires',
 			'S':  'sprites',
 			'SS': 'sprites',
-			'P':  'patches',  # Not usually handled by ZDoom, primarily should use PNAMES
-			'PP': 'patches',
+			#'P':  'patches',  # Not usually handled by ZDoom, should use PNAMES instead
+			#'PP': 'patches',
 			'TX': 'textures',
 			'V':  'voices',
 			'VV': 'voices',
 			'VX': 'voxels'
 		}
 		
-		wad_dir = deepcopy(self.wad_dir)
+		# Grab PNAMES and process patches first if it exists
 		pnames = None
+		for pointer, size, name in self.wad_dir:
+			if name == 'PNAMES':
+				pnames = PNames(self.get_data((pointer, size, name)))
+				self.known_names['patches'] = pnames.entries
+		# Pick up and duplicate anything used as a patch from PNAMES into the patch namespace
+		# This is necessary for textures like SLAD10 from Final Doom, which uses a sprite
+		if pnames:
+			for pointer, size, name in self.wad_dir:
+				if name in pnames:
+					wad_namespaces['patches'].append((pointer, size, name))
+
+		wad_dir = deepcopy(self.wad_dir)
 		while wad_dir:
 			# Consume regular Doom/Hexen maps
 			if len(wad_dir) > 1 and wad_dir[1][2] == 'THINGS':
@@ -534,20 +588,23 @@ class Wad(Archive):
 			else:
 				for namespace, names in self.known_names.items():
 					if any(fnmatch(wad_dir[0][2], pattern) for pattern in self.known_names[namespace]):
-						if wad_dir[0][2] == 'PNAMES':
-							pnames = PNames(self.get_data(wad_dir[0]))
-							self.known_names['patches'] = pnames.entries
 						wad_namespaces[namespace].append(wad_dir.pop(0))
 						break
 				else:
-					print('Unrecognized lump \"' + wad_dir[0][2] + '\". Treating as global data.')
-					wad_namespaces['global'].append(wad_dir.pop(0))
+					# Don't add misc markers to the namespaces
+					if fnmatch(wad_dir[0][2], '*_START') or fnmatch(wad_dir[0][2], '*_END'):
+						wad_dir.pop(0)
+						continue
+					# patches are already handled at the top
+					if wad_dir[0][2] in pnames:
+						wad_dir.pop(0)
+						continue
+					# Try type recognition
+					ns = id_type(self.get_data(wad_dir[0]))
+					if ns:
+						wad_namespaces[ns].append(wad_dir.pop(0))
+					else:
+						print('Unrecognized lump \"' + wad_dir[0][2] + '\". Treating as global data.')
+						wad_namespaces['global'].append(wad_dir.pop(0))
 		
 		self.namespaced = wad_namespaces
-		# Pick up and duplicate anything used as a patch from PNAMES into the patch namespace
-		# This is necessary for textures like SLAD10 from Final Doom, which uses a sprite
-		if pnames:
-			for pointer, size, name in self.wad_dir:
-				if name in pnames:
-					# TODO: Won't this double add? Should be a set?
-					self.namespaced['patches'].append((pointer, size, name))
